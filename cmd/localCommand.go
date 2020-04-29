@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"os/exec"
@@ -15,13 +14,9 @@ const (
 )
 
 type LocalCommand struct {
-	Cmd           string
-	Timeout       time.Duration
-	TerminateChan chan int
-	Setpgid       bool
-	LocalCommand  *exec.Cmd
-	stdout        bytes.Buffer
-	stderr        bytes.Buffer
+	BaseCommand
+	Setpgid      bool
+	LocalCommand *exec.Cmd
 }
 
 func NewLocalCmd(c *LocalCommand) (*LocalCommand, error) {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/casainurbania/playground/cmd"
@@ -35,12 +36,15 @@ func main() {
 
 // 模拟执行的任务
 func myTask() {
-	cl, _ := conn.NewSSHClient("xxx.xxx.xxx.xxx", "root", "")
-	c := &cmd.RemoteCommand{
-		Cmd:     "date",
-		Timeout: time.Second * 25,
+	cl, err := conn.NewSSHClient("xxx.xxx.xxx.xxx", "root", "")
+	if err != nil {
+		fmt.Println("ssh连接失败: ", err.Error())
+		os.Exit(1)
 	}
-	c, err := cmd.NewRemoteCmd("date", 5, cl)
+	c := &cmd.RemoteCommand{}
+	c.Cmd = "date"
+	c.Timeout = time.Second * 25
+	c, err = cmd.NewRemoteCmd("date", 5, cl)
 
 	if err != nil {
 		fmt.Println(err)

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"strings"
@@ -11,19 +10,15 @@ import (
 )
 
 type RemoteCommand struct {
-	Cmd           string
-	Timeout       time.Duration
-	TerminateChan chan int
-	client        *ssh.Client
-	stdout        bytes.Buffer
-	stderr        bytes.Buffer
+	BaseCommand
+	client *ssh.Client
 }
 
 func NewRemoteCmd(cmd string, timeout int, client *ssh.Client) (*RemoteCommand, error) {
-	c := &RemoteCommand{
-		Cmd:     cmd,
-		Timeout: time.Duration(timeout) * time.Second,
-	}
+	c := &RemoteCommand{}
+	c.Cmd = cmd
+	c.Timeout = time.Duration(timeout) * time.Second
+
 	if c.Timeout <= 0*time.Second {
 		c.Timeout = DEFAULT_RUM_TIMEOUT * time.Second
 	}

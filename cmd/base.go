@@ -11,5 +11,5 @@ type BaseCommand struct {
 	TerminateChan chan int
 	stdout        bytes.Buffer
 	stderr        bytes.Buffer
-	state         int
+	state         string
 }

@@ -5,15 +5,32 @@ import (
 	"os"
 	"time"
 
+	"github.com/casainurbania/playground/task"
+	"github.com/gomodule/redigo/redis"
+
 	"github.com/casainurbania/playground/cmd"
 	"github.com/casainurbania/playground/conn"
-	"github.com/ivpusic/grpool"
 )
+
+var r redis.Conn
+
+func init() {
+	var err error
+	r, err = redis.Dial("tcp", "127.0.0.1:6379")
+	if err != nil {
+		panic(err)
+	}
+	// 示例
+	//_, err = r.Do("LPUSH", "UNSTART", 0)
+	//_, err = r.Do("LPUSH", "WAIT", 0)
+	//_, err = r.Do("LPUSH", "RUNNING", 0)
+
+}
 
 func main() {
 
 	// 队列长度10,worker数量3个
-	pool := grpool.NewPool(3, 10)
+	pool := task.NewPool(3, 10, r)
 	defer pool.Release()
 
 	// 等待多少个worker执行结束
@@ -36,7 +53,7 @@ func main() {
 
 // 模拟执行的任务
 func myTask() {
-	cl, err := conn.NewSSHClient("xxx.xxx.xxx.xxx", "root", "")
+	cl, err := conn.NewSSHClient("192.168.10.112", "root", "1qaz!QAZ")
 	if err != nil {
 		fmt.Println("ssh连接失败: ", err.Error())
 		os.Exit(1)
